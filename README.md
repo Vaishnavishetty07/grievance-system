@@ -62,19 +62,41 @@ The system integrates Google Gemini AI to analyze submitted complaints and gener
 - GitHub
 - Postman
 
+## Project Structure
+
+```
+
+grievance-system/
+│
+├── app.py
+├── config.py
+├── models/
+├── routes/
+├── services/
+├── templates/
+├── static/
+├── requirements.txt
+└── README.md
+
+```
+
 ## How to Run the Project
 
 ### 1. Clone the Repository
 
+```
 
 git clone <repository-url>
 
+```
 
 ### 2. Install Required Dependencies
 
+```
 
 pip install -r requirements.txt
 
+```
 
 ### 3. Configure Environment Variables
 
@@ -82,15 +104,19 @@ Create a `.env` file and add required API keys and configuration details.
 
 ### 4. Run the Application
 
+```
 
 python app.py
 
+```
 
 ### 5. Open in Browser
 
+```
 
 [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
 
+```
 
 ## System Roles
 
@@ -123,3 +149,5 @@ python app.py
 
 Vaishnavi Shetty
 
+
+This is ready for GitHub and resume use. It will make the repository look like a proper final-year/project submission.
