@@ -62,20 +62,6 @@ The system integrates Google Gemini AI to analyze submitted complaints and gener
 - GitHub
 - Postman
 
-## Project Structure
-
-grievance-system/
-│
-├── app.py
-├── config.py
-├── models/
-├── routes/
-├── services/
-├── templates/
-├── static/
-├── requirements.txt
-└── README.md
-
 ## How to Run the Project
 
 ### 1. Clone the Repository
