@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Staff Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>My Assigned Complaints</h2>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>#</th><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Summary</th><th>Update</th></tr>
+    </thead>
+    <tbody>
+      {% for c in complaints %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ c.title }}</td>
+        <td>{{ c.category }}</td>
+        <td><span class="badge badge-{{ c.priority | lower }}">{{ c.priority }}</span></td>
+        <td><span class="status status-{{ c.status | lower | replace(' ','-') }}">{{ c.status }}</span></td>
+        <td class="summary-text">{{ c.summary }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('staff.update', complaint_id=c.id) }}" style="display:flex; gap:4px;">
+            <select name="status">
+              <option {% if c.status=='In Progress' %}selected{% endif %}>In Progress</option>
+              <option {% if c.status=='Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" class="btn-sm">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center; padding:20px;">No complaints assigned yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

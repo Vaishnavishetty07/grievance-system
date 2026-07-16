@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>All Complaints</h2>
+  <a href="{{ url_for('analytics.dashboard') }}" class="btn-primary">📊 Analytics</a>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>Title</th><th>Category</th><th>Priority</th>
+        <th>Status</th><th>Summary</th><th>Assign Staff</th><th>Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in complaints %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ c.title }}</td>
+        <td>{{ c.category }}</td>
+        <td><span class="badge badge-{{ c.priority | lower }}">{{ c.priority }}</span></td>
+        <td><span class="status status-{{ c.status | lower | replace(' ','-') }}">{{ c.status }}</span></td>
+        <td class="summary-text">{{ c.summary }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.assign', complaint_id=c.id) }}" style="display:flex; gap:4px;">
+            <select name="staff_id" required>
+              <option value="">Select Staff</option>
+              {% for staff in staff_list %}
+                <option value="{{ staff.id }}">{{ staff.name }}</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn-sm">Assign</button>
+          </form>
+        </td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.update_status', complaint_id=c.id) }}" style="display:flex; gap:4px;">
+            <select name="status">
+              <option {% if c.status=='Pending' %}selected{% endif %}>Pending</option>
+              <option {% if c.status=='In Progress' %}selected{% endif %}>In Progress</option>
+              <option {% if c.status=='Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" class="btn-sm">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" style="text-align:center; padding:20px;">No complaints yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

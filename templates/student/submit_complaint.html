@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Submit Complaint{% endblock %}
+{% block content %}
+<div class="form-card wide">
+  <h2>Submit a Complaint</h2>
+  <form method="POST" action="{{ url_for('complaints.submit') }}" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label>Complaint Title</label>
+      <input type="text" name="title" id="title" placeholder="Short title e.g. Water leakage in room 204" required>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" id="description" rows="5"
+        placeholder="Describe the issue in detail..." required></textarea>
+    </div>
+
+    <!-- Live AI Preview Box -->
+    <div id="ai-preview" class="ai-box" style="display:none;">
+      <p>🤖 <strong>AI Analysis</strong></p>
+      <p>Category: <strong id="ai-category">--</strong> &nbsp;|&nbsp; Priority: <strong id="ai-priority">--</strong></p>
+      <p id="ai-summary" style="color:#555; font-style:italic;"></p>
+    </div>
+
+    <div class="form-group">
+      <label>Upload Image <span class="hint">(optional)</span></label>
+      <input type="file" name="image" accept="image/*">
+    </div>
+
+    <button type="submit" class="btn-primary">Submit Complaint</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let timer;
+  const titleEl = document.getElementById('title');
+  const descEl  = document.getElementById('description');
+  const preview = document.getElementById('ai-preview');
+
+  function fetchAI() {
+    const title = titleEl.value.trim();
+    const desc  = descEl.value.trim();
+    if (title.length < 5 || desc.length < 10) return;
+
+    fetch('/ai/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description: desc })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('ai-category').textContent = data.category || '--';
+      document.getElementById('ai-priority').textContent = data.priority || '--';
+      document.getElementById('ai-summary').textContent  = data.summary  || '';
+      preview.style.display = 'block';
+    })
+    .catch(err => console.log('AI preview error:', err));
+  }
+
+  [titleEl, descEl].forEach(el => {
+    el.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(fetchAI, 900);
+    });
+  });
+</script>
+{% endblock %}

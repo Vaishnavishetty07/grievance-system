@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>Analytics Dashboard</h2>
+  <a href="{{ url_for('admin.dashboard') }}" class="btn-primary">← Back</a>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><h3>{{ total }}</h3><p>Total</p></div>
+  <div class="stat-card pending"><h3>{{ pending }}</h3><p>Pending</p></div>
+  <div class="stat-card progress"><h3>{{ progress }}</h3><p>In Progress</p></div>
+  <div class="stat-card resolved"><h3>{{ resolved }}</h3><p>Resolved</p></div>
+</div>
+
+<div class="charts-row">
+  <div class="chart-box">
+    <h3>Complaints by Category</h3>
+    <canvas id="categoryChart" height="300"></canvas>
+  </div>
+  <div class="chart-box">
+    <h3>Complaints by Priority</h3>
+    <canvas id="priorityChart" height="300"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  window.onload = function() {
+    new Chart(document.getElementById('categoryChart'), {
+      type: 'bar',
+      data: {
+        labels: {{ category_labels | tojson }},
+        datasets: [{
+          label: 'Count',
+          data: {{ category_counts | tojson }},
+          backgroundColor: ['#3B82F6','#EF4444','#F59E0B','#10B981','#8B5CF6','#EC4899','#6B7280'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    });
+
+    new Chart(document.getElementById('priorityChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Low', 'Medium', 'High'],
+        datasets: [{
+          data: {{ priority_counts | tojson }},
+          backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+</script>
+{% endblock %}

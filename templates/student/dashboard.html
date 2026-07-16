@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}My Complaints{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>My Complaints</h2>
+  <a href="{{ url_for('complaints.submit') }}" class="btn-primary">+ Submit New Complaint</a>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>AI Summary</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in complaints %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ c.title }}</td>
+        <td><span class="badge badge-category">{{ c.category }}</span></td>
+        <td><span class="badge badge-{{ c.priority | lower }}">{{ c.priority }}</span></td>
+        <td><span class="status status-{{ c.status | lower | replace(' ', '-') }}">{{ c.status }}</span></td>
+        <td class="summary-text">{{ c.summary }}</td>
+        <td>{{ c.created_at[:10] if c.created_at else 'N/A' }}</td>
+        <td>
+          <div style="display:flex; flex-direction:row; gap:6px;">
+            <a href="{{ url_for('complaints.view', complaint_id=c.id) }}" class="btn-sm">View</a>
+            {% if c.status == 'Resolved' %}
+              <a href="{{ url_for('feedback.submit', complaint_id=c.id) }}" class="btn-sm btn-green">Rate</a>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="8" style="text-align:center; padding:30px; color:#888;">
+          No complaints submitted yet. <a href="{{ url_for('complaints.submit') }}">Submit one now</a>.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

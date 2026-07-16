@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}View Complaint{% endblock %}
+{% block content %}
+<div class="detail-card">
+  <a href="{{ url_for('complaints.dashboard') }}" class="back-link">← Back to My Complaints</a>
+  <h2>{{ complaint.title }}</h2>
+
+  <div class="detail-grid">
+    <div><strong>Category:</strong> {{ complaint.category }}</div>
+    <div><strong>Priority:</strong>
+      <span class="badge badge-{{ complaint.priority | lower }}">{{ complaint.priority }}</span>
+    </div>
+    <div><strong>Status:</strong>
+      <span class="status status-{{ complaint.status | lower | replace(' ','-') }}">{{ complaint.status }}</span>
+    </div>
+    <div><strong>Submitted:</strong> {{ complaint.created_at[:10] if complaint.created_at else 'N/A' }}</div>
+  </div>
+
+  <div class="detail-section">
+    <strong>Description:</strong>
+    <p>{{ complaint.description }}</p>
+  </div>
+
+  <div class="detail-section">
+    <strong>AI Summary:</strong>
+    <p class="ai-summary">{{ complaint.summary }}</p>
+  </div>
+
+  {% if complaint.image_url %}
+  <div class="detail-section">
+    <strong>Attached Image:</strong><br>
+    <img src="{{ complaint.image_url }}" alt="Complaint image" style="max-width:400px; border-radius:8px; margin-top:8px;">
+  </div>
+  {% endif %}
+
+  <div class="detail-section">
+    <strong>Activity Log:</strong>
+    <ul class="activity-log">
+      {% for log in logs %}
+        <li>{{ log.action }} — <em>{{ log.timestamp[:16] if log.timestamp else '' }}</em></li>
+      {% else %}
+        <li>No activity recorded yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% if complaint.status == 'Resolved' %}
+    <a href="{{ url_for('feedback.submit', complaint_id=complaint.id) }}" class="btn-primary">Give Feedback</a>
+  {% endif %}
+</div>
+{% endblock %}
