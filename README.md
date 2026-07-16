@@ -150,4 +150,3 @@ python app.py
 Vaishnavi Shetty
 
 
-This is ready for GitHub and resume use. It will make the repository look like a proper final-year/project submission.
